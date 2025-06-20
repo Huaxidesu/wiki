@@ -1,0 +1,360 @@
+== '''什么是群组服务器？''' ==
+
+《我的世界》群组服务器是指一种由多个相互连接的独立《我的世界》服务器实例组成的高级服务器架构。这些独立的服务器实例被称为“子服”。群组服务器使用特殊的代理软件（最著名的是 BungeeCord 及其分支/后继者，如 Waterfall 和 Velocity）来协调玩家在子服之间的无缝切换，并提供一个统一的访问入口点（IP地址/域名）。
+
+== '''群组服务器可以做到什么''' ==
+
+* 各个子服务器互联互通，可游戏内直接跳转。
+* 聊天同步（通过插件实现）。
+* 背包同步（通过插件实现）。
+* 分流后期 GTNH 玩家基地，避免因大量机器占用服务器流畅度，减少对前期玩家生存体验的影响（如挖方块延迟）。
+* 各服务器玩家可相互参观、交流。
+
+== '''版本''' ==
+
+'''HexaCord_v147'''端只能使用'''Java 8'''，'''Velocity'''端需要'''Java 17'''或更新版本。
+
+== '''安装服务端''' ==
+
+[https://www.bilibili.com/video/av114710137540662/ 视频展示]（个人认为没wiki详细）。
+
+=== '''前置条件''' ===
+
+需要预先安装 [https://gtnh.huijiwiki.com/p/279/GTNewHorizons-Thermos#GTNewHorizons-Thermos GTNewHorizons-Thermos]。
+
+==== '''Thermos额外配置''' ====
+
+===== server.properties =====
+
+编辑'''server.properties'''
+<syntaxhighlight lang="yaml">
+server-port=非公开端口
+online-mode=false
+white-list=按需填写
+</syntaxhighlight>
+
+===== 注意： =====
+
+* <code>online-mode=false</code> 并不代表禁止正版验证，而是将验证交给 BC 端，BC 端会将玩家的身份信息转发到子服务器。
+
+* <code>server-port=</code> 如果为公开端口的话，会导致任何 BC 服务端均可以连接到当前服务器，绕过验证。
+
+* ServerUtilities-'''2.1.40'''（2.7.4）会导致进服崩溃，建议回退到ServerUtilities-'''2.0.88'''（2.7.0）。
+
+==== spigot.yml ====
+
+在完整运行'''GTNewHorizons-Thermos'''服务端后，在其目录中会生成spigot.yml文件
+修改<code>bungeecord: true</code>。
+
+注意：开启这个选项将导致只能通过转发服务端的bungeecord协议进入服务器。
+
+=== HexaCord服务端 ===
+
+==== 1、下载Java 8 ====
+
+从 [https://adoptium.net/ OpenJDK 官网]或 [https://www.azul.com/downloads/ Azul官网] 或从 [https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html ORACLE官网]安装，并确保它与您的操作系统相匹配。
+
+==== 2、下载HexaCord服务端本体文件 ====
+
+从[https://wwsl.lanzoul.com/b0hd4dwbg 网盘] 密码:4qvg 下载服务端文件，由于mcbbs已经关闭所以无法提供[https://gitee.com/Imcc 原作者]的下载地址。
+
+注意：网盘中提供的修改版服务端，原始服务端地址[https://github.com/CronixMC/HexaCord HexaCord]。
+
+==== 3、首次运行后修改配置文件 ====
+
+===== config.yml =====
+
+* `host:` 转发的内网IP+端口
+* `forced_hosts:` 绑定域名到服务器（可以不绑定）
+* `force_default_server: false` （记住玩家下线的服务器，推荐）
+* `servers:` 子服务器地址
+* `online_mode:` 是否开启正版验证
+
+<div class="mw-collapsible mw-collapsed" style="width: fit-content;>
+<div class="mw-collapsible-header">点击此处展开/折叠配置文件示例'''-->'''</div>
+<div class="mw-collapsible-content">
+<syntaxhighlight lang="yaml">
+custom_server_name: HexaCord
+log_commands: true
+listeners:
+- query_port: 25533
+  motd: '&1跨服测试'
+  priorities:
+  - sjd
+  bind_local_address: true
+  tab_list: GLOBAL_PING
+  query_enabled: false
+  host: 0.0.0.0:25565
+  forced_hosts:
+    sjd.xxxxx.xxx: sjd
+    tks.xxxxx.xxx: tks
+  max_players: 50
+  tab_size: 50
+  ping_passthrough: true
+  force_default_server: false
+online_mode: true
+connection_throttle: 0
+groups:
+  md_5:
+  - admin
+ip_forward: true
+always_handle_packets: false
+network_compression_threshold: 256
+stats: 4a65c152-4a49-48bc-a174-7869d8a7568c
+prevent_proxy_connections: false
+disabled_commands:
+- disabledcommandhere
+timeout: 30000
+permissions:
+  default:
+  - bungeecord.command.server
+  - bungeecord.command.list
+  admin:
+  - bungeecord.command.alert
+  - bungeecord.command.end
+  - bungeecord.command.ip
+  - bungeecord.command.reload
+servers:
+  tks:
+    motd: '&1Just another BungeeCord - Forced Host'
+    address: localhost:25561
+    restricted: false
+  sjd:
+    motd: '&1Just another BungeeCord - Forced Host'
+    address: localhost:25562
+    restricted: false
+player_limit: -1
+</syntaxhighlight>
+</div>
+</div>
+
+*详细配置文件教程建议前往[https://www.spigotmc.org/wiki/bungeecord/ BungeecordWiki]与网络社区查看
+
+=== Velocity服务端 ===
+
+==== 下载 ====
+
+前往[https://papermc.io/software/velocity 官网]下载服务端。
+
+==== 配置 ====
+
+Velocity服务端与HexaCord的配置方法相似，但是配置文件略有不同。
+
+'''velocity.toml'''
+
+<code>bind = "0.0.0.0:25565"</code>绑定端口
+
+<code>player-info-forwarding-mode = "bungeeguard"</code>使用bc转发协议
+
+<code>ping-passthrough = "mods"</code>传递后端模组列表
+
+<code>[servers]</code>配置子服
+
+<code>try = []</code>设置默认服务器
+
+<div class="mw-collapsible mw-collapsed" style="width: fit-content;>
+<div class="mw-collapsible-header">点击此处展开/折叠配置文件示例'''-->'''</div>
+<div class="mw-collapsible-content">
+<syntaxhighlight lang="yaml">
+# Config version. Do not change this
+config-version = "2.7"
+
+# What port should the proxy be bound to? By default, we'll bind to all addresses on port 25565.
+bind = "0.0.0.0:25565"
+
+# What should be the MOTD? This gets displayed when the player adds your server to
+# their server list. Only MiniMessage format is accepted.
+motd = "<#09add3>A Velocity Server"
+
+# What should we display for the maximum number of players? (Velocity does not support a cap
+# on the number of players online.)
+show-max-players = 500
+
+# Should we authenticate players with Mojang? By default, this is on.
+online-mode = true
+
+# Should the proxy enforce the new public key security standard? By default, this is on.
+force-key-authentication = true
+
+# If client's ISP/AS sent from this proxy is different from the one from Mojang's
+# authentication server, the player is kicked. This disallows some VPN and proxy
+# connections but is a weak form of protection.
+prevent-client-proxy-connections = false
+
+# Should we forward IP addresses and other data to backend servers?
+# Available options:
+# - "none":        No forwarding will be done. All players will appear to be connecting
+#                  from the proxy and will have offline-mode UUIDs.
+# - "legacy":      Forward player IPs and UUIDs in a BungeeCord-compatible format. Use this
+#                  if you run servers using Minecraft 1.12 or lower.
+# - "bungeeguard": Forward player IPs and UUIDs in a format supported by the BungeeGuard
+#                  plugin. Use this if you run servers using Minecraft 1.12 or lower, and are
+#                  unable to implement network level firewalling (on a shared host).
+# - "modern":      Forward player IPs and UUIDs as part of the login process using
+#                  Velocity's native forwarding. Only applicable for Minecraft 1.13 or higher.
+player-info-forwarding-mode = "bungeeguard"
+
+# If you are using modern or BungeeGuard IP forwarding, configure a file that contains a unique secret here.
+# The file is expected to be UTF-8 encoded and not empty.
+forwarding-secret-file = "forwarding.secret"
+
+# Announce whether or not your server supports Forge. If you run a modded server, we
+# suggest turning this on.
+# 
+# If your network runs one modpack consistently, consider using ping-passthrough = "mods"
+# instead for a nicer display in the server list.
+announce-forge = true
+
+# If enabled (default is false) and the proxy is in online mode, Velocity will kick
+# any existing player who is online if a duplicate connection attempt is made.
+kick-existing-players = true
+
+# Should Velocity pass server list ping requests to a backend server?
+# Available options:
+# - "disabled":    No pass-through will be done. The velocity.toml and server-icon.png
+#                  will determine the initial server list ping response.
+# - "mods":        Passes only the mod list from your backend server into the response.
+#                  The first server in your try list (or forced host) with a mod list will be
+#                  used. If no backend servers can be contacted, Velocity won't display any
+#                  mod information.
+# - "description": Uses the description and mod list from the backend server. The first
+#                  server in the try (or forced host) list that responds is used for the
+#                  description and mod list.
+# - "all":         Uses the backend server's response as the proxy response. The Velocity
+#                  configuration is used if no servers could be contacted.
+ping-passthrough = "mods"
+
+# If not enabled (default is true) player IP addresses will be replaced by <ip address withheld> in logs
+enable-player-address-logging = true
+
+[servers]
+# Configure your servers here. Each key represents the server's name, and the value
+# represents the IP address of the server to connect to.
+tks = "127.0.0.1:25577"
+sjd = "127.0.0.1:25599"
+
+# In what order we should try servers when a player logs in or is kicked from a server.
+try = [
+    "tks"
+]
+
+[forced-hosts]
+# Configure your forced hosts here.
+
+[advanced]
+# How large a Minecraft packet has to be before we compress it. Setting this to zero will
+# compress all packets, and setting it to -1 will disable compression entirely.
+compression-threshold = 256
+
+# How much compression should be done (from 0-9). The default is -1, which uses the
+# default level of 6.
+compression-level = -1
+
+# How fast (in milliseconds) are clients allowed to connect after the last connection? By
+# default, this is three seconds. Disable this by setting this to 0.
+login-ratelimit = 3000
+
+# Specify a custom timeout for connection timeouts here. The default is five seconds.
+connection-timeout = 5000
+
+# Specify a read timeout for connections here. The default is 30 seconds.
+read-timeout = 30000
+
+# Enables compatibility with HAProxy's PROXY protocol. If you don't know what this is for, then
+# don't enable it.
+haproxy-protocol = false
+
+# Enables TCP fast open support on the proxy. Requires the proxy to run on Linux.
+tcp-fast-open = false
+
+# Enables BungeeCord plugin messaging channel support on Velocity.
+bungee-plugin-message-channel = true
+
+# Shows ping requests to the proxy from clients.
+show-ping-requests = false
+
+# By default, Velocity will attempt to gracefully handle situations where the user unexpectedly
+# loses connection to the server without an explicit disconnect message by attempting to fall the
+# user back, except in the case of read timeouts. BungeeCord will disconnect the user instead. You
+# can disable this setting to use the BungeeCord behavior.
+failover-on-unexpected-server-disconnect = true
+
+# Declares the proxy commands to 1.13+ clients.
+announce-proxy-commands = true
+
+# Enables the logging of commands
+log-command-executions = false
+
+# Enables logging of player connections when connecting to the proxy, switching servers
+# and disconnecting from the proxy.
+log-player-connections = true
+
+# Allows players transferred from other hosts via the
+# Transfer packet (Minecraft 1.20.5) to be received.
+accepts-transfers = false
+
+[query]
+# Whether to enable responding to GameSpy 4 query responses or not.
+enabled = false
+
+# If query is enabled, on what port should the query protocol listen on?
+port = 25565
+
+# This is the map name that is reported to the query services.
+map = "Velocity"
+
+# Whether plugins should be shown in query response by default or not
+show-plugins = false
+
+</syntaxhighlight>
+</div>
+</div>
+
+*详细配置文件教程建议前往[https://docs.papermc.io/velocity/ Velocity Documentation]与网络社区查看
+
+*velocity插件与bungeecord插件大多不通用！
+
+=== 解决客户端跨服崩溃 ===
+
+==== 引起跨服客户端跨服崩溃的行为 ====
+
+*子服务器间地图id映射不同。
+*BungeeTabListPlus同步tab（存疑）。
+
+==== 解决方法 ====
+
+*不使用tab同步插件，子服务都使用一套地图（仅复制地图文件就行，保证level.dat文件一样，内容不需要一样）。
+*或者使用跨服修复forge补丁[https://wwsl.lanzoul.com/b0hd4dwbg 网盘] 密码:4qvg，[https://gitee.com/Imcc 作者]。
+
+'''注意'''：跨服修复forge的安装可能无法通过导入包分发给玩家，需要玩家有一定的动手能力，如果启动器启用了版本隔离，那么文件应该在<code>".minecraft\libraries\net\minecraftforge\forge\1.7.10-10.13.4.1614-1.7.10\forge-1.7.10-10.13.4.1614-1.7.10.jar"</code>,游戏安装目录在<code>".minecraft\versions"</code>，例如HMCL启动器应该前往"D:\Game\Minecraft\HMCL\.minecraft\libraries\net\minecraftforge\forge\1.7.10-10.13.4.1614-1.7.10\forge-1.7.10-10.13.4.1614-1.7.10.jar"而不是"D:\Game\Minecraft\HMCL\.minecraft\versions\GT New Horizons 2.7.4"。
+
+（或许写个bat执行脚本发给服务器玩家可以更方便的帮助不熟悉文件目录的玩家打上修复补丁？）
+
+=== 同时运行转发服务端和子服务端 ===
+
+*在游戏内输入<code>server 服务器名字</code>即可跨服。
+*你也可以使用指令牌子，npc，聊天插件点击脚本，stp等插件实现辅助输入命令跨服。
+
+=== 插件 ===
+
+[https://www.spigotmc.org/resources Spigotmc]
+
+==== bungeecord/HexaCord ====
+
+[https://www.spigotmc.org/resources/bungeetablistplus.313 BungeeTabListPlus]
+
+[https://github.com/Coloryr/AllMusic_Server 服务器点歌]
+
+[https://github.com/Coloryr/Minecraft_QQ QQ群服互联机器人]
+
+==== Thermos ====
+
+[https://archives.mcbbs.co/read.php?tid=862084 PlayerDataSQL模组数据跨服同步插件]
+
+[https://gitee.com/Imcc/BanItem 根据NBT禁用物品插件]
+
+[[Bukkit插件]]
+
+==== Velocity ====
+
+[https://forums.papermc.io/forums/velocity-plugin-releases/ velocity插件社区]
