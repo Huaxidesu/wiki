@@ -71,7 +71,7 @@ white-list=按需填写
 * `online_mode:` 是否开启正版验证
 
 <div class="mw-collapsible mw-collapsed" style="width: fit-content;>
-<div class="mw-collapsible-header">点击此处展开/折叠配置文件示例'''-->'''</div>
+<div class="mw-collapsible-header">点击此处展开/折叠配置文件示例</div>
 <div class="mw-collapsible-content">
 <syntaxhighlight lang="yaml">
 custom_server_name: HexaCord
@@ -153,7 +153,7 @@ Velocity服务端与HexaCord的配置方法相似，但是配置文件略有不�
 <code>try = []</code>设置默认服务器
 
 <div class="mw-collapsible mw-collapsed" style="width: fit-content;>
-<div class="mw-collapsible-header">点击此处展开/折叠配置文件示例'''-->'''</div>
+<div class="mw-collapsible-header">点击此处展开/折叠配置文件示例</div>
 <div class="mw-collapsible-content">
 <syntaxhighlight lang="yaml">
 # Config version. Do not change this
