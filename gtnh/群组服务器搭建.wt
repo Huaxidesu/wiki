@@ -50,6 +50,15 @@ white-list=按需填写
 
 注意：开启这个选项将导致只能通过转发服务端的bungeecord协议进入服务器。
 
+==== hodgepodge.cfg ====
+
+如果不改<code>hodgepodge.cfg</code>会导致跨服失败。
+
+<syntaxhighlight lang="yaml">
+B:fixLoginDimensionIDOverflow=false
+B:increasePacketSizeLimit=false
+</syntaxhighlight>
+
 === HexaCord服务端 ===
 
 ==== 1、下载Java 8 ====
