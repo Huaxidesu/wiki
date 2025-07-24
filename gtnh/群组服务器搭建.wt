@@ -364,6 +364,10 @@ show-plugins = false
 
 [https://gitee.com/Imcc/BanItem 根据NBT禁用物品插件]
 
+[https://github.com/TeamJM/journeymap-bukkit 旅行者地图群组服兼容] [https://github.com/Huaxidesu/journeymap-bukkit/releases/tag/build 编译好的]
+
+[https://github.com/jiajiaxd/VoteReboot 投票重启] [https://github.com/Huaxidesu/VoteReboot/releases/tag/1 编译好的]
+
 [[Bukkit插件]]
 
 ==== Velocity ====
